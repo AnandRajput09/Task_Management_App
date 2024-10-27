@@ -29,8 +29,8 @@ Setup Instructions
 Follow these steps to run the application locally.
 
 1. Clone the Repository
-   git clone https://github.com/ AnandRajput09/Task_Management_App.git
-   cd Task_Management_App
+   - git clone [https://github.com/AnandRajput09/Task_Management_App.git](https://github.com/AnandRajput09/Task_Management_App.git)
+   - cd Task_Management_App
 
 2. Open the Solution in Visual Studio
 •	Open Visual Studio and select "File" > "Open" > "Project/Solution".
