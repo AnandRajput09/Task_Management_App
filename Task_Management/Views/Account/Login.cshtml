@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Login";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-lg" style="width: 24rem;">
+        <div class="card-body p-4">
+            <h3 class="card-title text-center mb-4">Login to Your Account</h3>
+
+
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+            {
+                <br />
+                <div class="d-flex justify-content-lg-around form-control-lg">
+                    <div class="form-check form-check-inline mb-4">
+                        <input type="radio" class="form-check-input" id="user" name="role" value="User" checked />
+                        <label class="form-check-label" for="user">User</label>
+                    </div>
+                    <div class="form-check form-check-inline mb-4">
+                        <input type="radio" class="form-check-input" id="admin" name="role" value="Admin" />
+                        <label class="form-check-label" for="admin">Admin</label>
+                    </div>
+                </div>
+
+
+                <div class="form-outline form-white mb-4">
+                    @*@Html.TextBox("email", null, new { @class = "form-control form-control-lg", placeholder = "Email" })*@
+                    <input type="text" class="col-12 form-control form-control-lg" id="username" name="username" placeholder="Enter your username" required />
+                </div>
+
+                <div class="form-outline form-white mb-4">
+                    @*@Html.Password("password", null, new { @class = "form-control form-control-lg", placeholder = "Password" })*@
+                    <input type="password" class="col-12 form-control form-control-lg" id="password" name="password" placeholder="Enter your password" required />
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-block w-100">Login</button>
+                </div>
+
+            }
+
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            {
+                <div class="alert alert-danger mt-3 text-center">@ViewBag.ErrorMessage</div>
+            }
+
+            <div class="text-center mt-3">
+                <p>New user? <a href="@Url.Action("Register", "Account")" class="link-primary">Register Here</a></p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "Task Lists";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Task List</h2>
+
+    <!-- Filter and Search Form -->
+    <form id="filterForm" action="@Url.Action("Index", "Task")" method="get" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <label for="statusFilter" class="form-label">Status</label>
+            <select name="statusFilter" class="form-select form-control">
+                <option value="">All</option>
+                <option value="Pending">Pending</option>
+                <option value="InProgress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label for="taskNameFilter" class="form-label">Task Name</label>
+            <input type="text" name="taskNameFilter" class="form-control" placeholder="Title">
+        </div>
+
+        <div class="col-md-3">
+            <label for="assignedToFilter" class="form-label">Assigned To</label>
+            <input type="text" name="assignedToFilter" class="form-control" placeholder="Assigned to (Email)">
+        </div>
+
+        <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary mt-3">Search By Filter</button>
+            <a href="@Url.Action("Index", "Task")" class="btn btn-secondary mt-3">Reset Filter</a>
+        </div>
+    </form>
+
+    <!-- Task List Container -->
+    <div id="taskListContainer">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                @if (ViewBag.Tasks != null && ViewBag.Tasks.Count > 0)
+                {
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Assigned To</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var task in ViewBag.Tasks)
+                            {
+                                <tr>
+                                    <td>@task.Title</td>
+                                    <td>@task.Status</td>
+                                    <td>@task.AssignedTo</td>
+                                    <td>
+                                        <a href="@Url.Action("Details", "Task", new { id = task.TaskId })" class="btn btn-info btn-sm w-25">Details</a>
+                                        <a href="@Url.Action("Edit", "Task", new { id = task.TaskId })" class="btn btn-warning btn-sm w-25">Edit</a>
+                                        <a href="@Url.Action("Delete", "Task", new { id = task.TaskId })" class="btn btn-danger btn-sm w-25">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-warning text-center">No data found.</div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Create", "Task")" class="btn btn-primary">Create New Task</a>
+    </div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#filterForm").submit(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            $.ajax({
+                url: $(this).attr("action"), // Form's action URL
+                type: "get",
+                data: $(this).serialize(), // Serialize form data
+                success: function (data) {
+                    // Replace the task list content with the updated content
+                    $("#taskListContainer").html($(data).find("#taskListContainer").html());
+                },
+                error: function () {
+                    alert("An error occurred while filtering tasks.");
+                }
+            });
+        });
+    });
+</script>

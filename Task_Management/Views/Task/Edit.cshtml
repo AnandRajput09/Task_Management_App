@@ -1,0 +1,48 @@
+﻿@model Task_Management.Models.Task
+
+@{
+    ViewBag.Title = "Edit Task";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-center">
+        <div class="card shadow-lg" style="width: 35rem; background-color: #f7f7f7; padding: 20px;">
+            <div class="card-body">
+                <h2 class="card-title text-center">Edit Task</h2>
+
+                @using (Html.BeginForm("EditTask", "Task", FormMethod.Post))
+                {
+                    <!-- Hidden field for TaskId -->
+                    @Html.HiddenFor(model => model.TaskId)
+
+                    <div class="form-group mb-4">
+                        @Html.LabelFor(model => model.Title, new { @class = "form-label" })
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "col-12 form-control form-control-lg", required = "required" } })
+                    </div>
+
+                    <div class="form-group mb-4">
+                        @Html.LabelFor(model => model.Description, new { @class = "form-label" })
+                        @Html.TextAreaFor(model => model.Description, new { @class = "col-12 form-control", rows = 4, required = "required" })
+                    </div>
+
+                    <div class="form-group mb-4">
+                        @Html.LabelFor(model => model.Status, new { @class = "form-label" })
+                        @Html.DropDownListFor(model => model.Status, new SelectList(new[] { "Pending", "InProgress", "Completed" }, Model.Status), new { @class = "col-12 form-control" })
+                    </div>
+
+                    <div class="form-group mb-4">
+                        @Html.LabelFor(model => model.AssignedTo, new { @class = "form-label" })
+                        @Html.EditorFor(model => model.AssignedTo, new { htmlAttributes = new { @class = "col-12 form-control form-control-lg", type = "email", required = "required" } })
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-3">Save Changes</button>
+                }
+
+                <div class="text-center mt-3">
+                    <a href="@Url.Action("Index", "Task")" class="btn btn-secondary">Back to Task List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

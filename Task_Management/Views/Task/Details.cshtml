@@ -1,0 +1,50 @@
+﻿@model Task_Management.Models.Task
+
+@{
+    ViewBag.Title = "Details Of The Task";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-center" style="padding-top: 30px; padding-bottom: 30px;">
+    <div class="card shadow-lg" style="width: 30rem; background-color: #f7f7f7; padding: 20px;">
+        <div class="card-body">
+            <h2 class="card-title text-center">Task Details</h2>
+
+            <div class="mb-3">
+                <strong>Title:</strong>
+                <p class="text-muted">@Model.Title</p>
+            </div>
+
+            <div class="mb-3">
+                <strong>Description:</strong>
+                <p class="text-muted" style="white-space: pre-wrap;">@Model.Description</p>
+            </div>
+
+            <div class="mb-3">
+                <strong>Status:</strong>
+                <p class="text-muted">@Model.Status</p>
+            </div>
+
+            <div class="mb-3">
+                <strong>Assigned To:</strong>
+                <p class="text-muted">@Model.AssignedTo</p>
+            </div>
+
+            <div class="mb-3">
+                <strong>Created At:</strong>
+                <p class="text-muted">@Model.CreatedAt</p>
+            </div>
+
+            <div class="mb-3">
+                <strong>Updated At:</strong>
+                <p class="text-muted">@Model.UpdatedAt</p>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="@Url.Action("Edit", "Task", new { id = Model.TaskId })" class="btn btn-warning w-25">Edit</a>
+                <a href="@Url.Action("Delete", "Task", new { id = Model.TaskId })" class="btn btn-danger w-25">Delete</a>
+                <a href="@Url.Action("Index", "Task")" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

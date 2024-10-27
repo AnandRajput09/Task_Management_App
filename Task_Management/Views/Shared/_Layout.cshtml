@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - My Application</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="~/Content/site.css" /> 
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light p-3 m-2">
+            <div class="navbar-brand">Task Management</div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Task")">Home</a>
+                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (Session["Role"] != null && Session["Role"].ToString() == "User")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Create", "Task")">Add Task</a>
+                            </li>
+                        }
+                        else if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Task")">All Tasks</a>
+                            </li>
+                        }
+                    }
+                </ul>
+                <ul class="navbar-nav">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (Session["Username"] != null) // Check if Username exists in Session
+                        {
+                            <ul class="navbar-nav">
+                                <li class="nav-item dropdown dropstart">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-user"></i> @Session["Username"]
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="@Url.Action("UpdateProfile", "Account")"><i class="fas fa-user-edit"></i> Update Profile</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")"><i class="fa fa-sign-out"></i> Logout</a></li>
+                                    </ul>
+                                </li>
+                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            </ul>
+                        }
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Login", "Account")"><i class="fa fa-sign-in"></i> Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Register", "Account")"><i class="fa fa-user-plus"></i> Register</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="mt-4">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include the SignalR library -->
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+
+    <!-- listen for notifications from the server and display them on the client side.* -->
+    <script>
+        $(function () {
+            // Reference the SignalR hub
+            var notificationHub = $.connection.notificationHub;
+
+            // Define what happens when a notification is received
+            notificationHub.client.receiveNotification = function (message) {
+                alert(message);
+            };
+
+            // Start the connection
+            $.connection.hub.start().done(function () {
+                console.log("SignalR connected!");
+            }).fail(function (error) {
+                console.error("SignalR connection failed: " + error);
+            });
+        });
+    </script>
+
+    <!-- SignalR client-side code -->
+    <script>
+        $(function () {
+            var taskHub = $.connection.taskHub;
+
+            taskHub.client.receiveTaskUpdate = function (task) {
+                // Handle the received task update here
+                console.log("Task update received:", task);
+            };
+
+            // Start the SignalR connection
+            $.connection.hub.start().done(function () {
+                console.log("Connected to TaskHub.");
+            }).fail(function () {
+                console.error("Could not connect to TaskHub.");
+            });
+        });
+    </script>
+
+    <!-- JWT token retrieval and fetch code -->
+    <script>
+    $(function () {
+    const token = localStorage.getItem("token"); // Retrieve token stored on login
+    if (token) {
+        // Function to make authenticated requests
+        function fetchWithAuth(url, options = {}) {
+            options.headers = {
+                ...options.headers,
+                "Authorization": `Bearer ${token}`
+            };
+            return fetch(url, options)
+                .then(response => {
+                    // Check if the response is JSON
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return response.json();
+                    } else if (response.status === 401) {
+                        console.error("Unauthorized access - token may be invalid or expired.");
+                        window.location.href = "@Url.Action("Login", "Account")";
+                    } else {
+                        console.log(response);
+                        throw new Error("Unexpected response format");
+                    }
+                });
+        }
+
+        fetchWithAuth("/Task/Index")
+            .then(data => console.log("Protected data:", data))
+            .catch(error => console.error("Error accessing protected endpoint:", error));
+    } else {
+        console.error("No token found. Please log in.");
+    }
+});
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+﻿@model Task_Management.Models.User
+
+@{
+    ViewBag.Title = "Update Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-center">
+        <div class="card shadow-lg border-0 rounded-lg" style="max-width: 400px; width: 100%;">
+            <div class="card-header bg-info text-white text-center">
+                <h3>Update Profile</h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("UpdateProfile", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        @Html.LabelFor(model => model.Username, new { @class = "form-label fw-bold" })
+                        @Html.TextBoxFor(model => model.Username, new { @class = "col-12 form-control", @readonly = "readonly" })
+                    </div>
+                    <div class="mb-3">
+                        @Html.LabelFor(model => model.Password, new { @class = "form-label fw-bold" })
+                        @Html.PasswordFor(model => model.Password, new { @class = "col-12 form-control", placeholder = "Enter new password", required = "required" })
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success">Update Profile</button>
+                        <a href="@Url.Action("Index", "Task")" class="btn btn-primary">Back to Home Page</a>
+                    </div>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+            {
+                <div class="alert alert-success mt-3 mx-4">@ViewBag.SuccessMessage</div>
+            }
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            {
+                <div class="alert alert-danger mt-3 mx-4">@ViewBag.ErrorMessage</div>
+            }
+        </div>
+    </div>
+</div>

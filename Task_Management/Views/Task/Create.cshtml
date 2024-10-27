@@ -1,0 +1,60 @@
+﻿@{
+    // ViewBag.Title = "Create New Task";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-center">
+        <div class="card shadow-lg" style="width: 35rem; background-color: #f7f7f7; padding: 20px;">
+            <div class="card-body">
+                <h2 class="card-title text-center">Add New Task</h2><br />
+
+                @using (Html.BeginForm("CreateTask", "Task", FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                    <div class="form-group mb-4">
+                        @Html.Label("Title", "Task Title", new { @class = "form-label" })
+                        @Html.TextBox("Title", null, new
+                        {
+                            @class = "col-12 form-control form-control-lg",
+                            placeholder = "Task Title",
+                            required = "required",
+                            pattern = @"\S+.*", // Ensure it has at least one non-whitespace character
+                            title = "Title must contain at least one non-whitespace character."
+                        })
+                    </div>
+
+                    <div class="form-group mb-4">
+                        @Html.Label("Description", "Task Description", new { @class = "form-label" })
+                        @Html.TextArea("Description", null, new
+                        {
+                            @class = "col-12 form-control",
+                            placeholder = "Task Description",
+                            rows = 4,
+                            required = "required",
+                            pattern = @"\S+.*", // Ensure it has at least one non-whitespace character
+                            title = "Description must contain at least one non-whitespace character."
+                        })
+                    </div>
+
+                    <div class="form-group mb-4">
+                        @Html.Label("Status", "Task Status", new { @class = "form-label" })
+                        @Html.DropDownList("Status", new SelectList(new List<string> { "Pending", "InProgress", "Completed" }, "Pending"), new { @class = "col-12 form-control form-control-lg", required = "required" })
+                    </div>
+
+                    <div class="form-group mb-4">
+                        @Html.Label("AssignedTo", "Assigned To (Email)", new { @class = "form-label" })
+                        @Html.TextBox("AssignedTo", null, new { @class = "col-12 form-control form-control-lg", placeholder = "Assigned To", type = "email", required = "required" })
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-block mt-3">Add Task</button>
+
+                }
+
+                <div class="text-center mt-3">
+                    <a href="@Url.Action("Index", "Task")" class="btn btn-secondary">Back to Task List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
