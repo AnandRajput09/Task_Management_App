@@ -25,43 +25,93 @@ namespace Task_Management.Controllers
         [HttpPost]
         public ActionResult Login(string username, string password, string role)
         {
-            var user = db.Users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == role);
+            var key = Convert.FromBase64String("TXlWZXJ5U2VjcmV0S2V5VGhhdElzTG9uZ0Vub3VnaDEyMyE="); // Base64-encoded key
 
+            // Static admin login logic
+            if (username == "admin" && password == "admin" && role == "Admin")
+            {
+                SetSessionAndToken(new User { UserId = 0, Username = "Admin", Role = "Admin" }, key);
+                return RedirectToAction("Index", "Task");
+            }
+
+            // Regular user login logic
+            var user = db.Users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == role);
             if (user != null)
             {
-                // Generate JWT token
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Convert.FromBase64String("TXlWZXJ5U2VjcmV0S2V5VGhhdElzTG9uZ0Vub3VnaDEyMyE="); // Base64-encoded key
-
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                        new Claim(ClaimTypes.Name, user.Username),
-                        new Claim(ClaimTypes.Role, user.Role) // Set the user's role as a claim
-                    }),
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var tokenString = tokenHandler.WriteToken(token);
-
-                // Store token and other info in session for use across the application
-                TempData["Token"] = tokenString;
-                Session["UserId"] = user.UserId;
-                Session["Username"] = user.Username;
-                Session["Role"] = user.Role;
-
-                // Set the authentication cookie
-                FormsAuthentication.SetAuthCookie(user.Username, false);
-
+                SetSessionAndToken(user, key);
                 return RedirectToAction("Index", "Task");
             }
 
             ViewBag.ErrorMessage = "Invalid username or password.";
             return View();
         }
+
+        // Helper function to set session and token
+        private void SetSessionAndToken(User user, byte[] key)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Role, user.Role)
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+            TempData["Token"] = tokenString;
+            Session["UserId"] = user.UserId;
+            Session["Username"] = user.Username;
+            Session["Role"] = user.Role;
+
+            FormsAuthentication.SetAuthCookie(user.Username, false);
+        }
+
+
+
+        //public ActionResult Login(string username, string password, string role)
+        //{
+        //    var user = db.Users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == role);
+
+        //    if (user != null)
+        //    {
+        //        // Generate JWT token
+        //        var tokenHandler = new JwtSecurityTokenHandler();
+        //        var key = Convert.FromBase64String("TXlWZXJ5U2VjcmV0S2V5VGhhdElzTG9uZ0Vub3VnaDEyMyE="); // Base64-encoded key
+
+        //        var tokenDescriptor = new SecurityTokenDescriptor
+        //        {
+        //            Subject = new ClaimsIdentity(new[]
+        //            {
+        //                new Claim(ClaimTypes.Name, user.Username),
+        //                new Claim(ClaimTypes.Role, user.Role) // Set the user's role as a claim
+        //            }),
+        //            Expires = DateTime.UtcNow.AddHours(1),
+        //            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        //        };
+
+        //        var token = tokenHandler.CreateToken(tokenDescriptor);
+        //        var tokenString = tokenHandler.WriteToken(token);
+
+        //        // Store token and other info in session for use across the application
+        //        TempData["Token"] = tokenString;
+        //        Session["UserId"] = user.UserId;
+        //        Session["Username"] = user.Username;
+        //        Session["Role"] = user.Role;
+
+        //        // Set the authentication cookie
+        //        FormsAuthentication.SetAuthCookie(user.Username, false);
+
+        //        return RedirectToAction("Index", "Task");
+        //    }
+
+        //    ViewBag.ErrorMessage = "Invalid username or password.";
+        //    return View();
+        //}
 
 
 

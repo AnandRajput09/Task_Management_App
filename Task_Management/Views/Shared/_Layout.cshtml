@@ -29,12 +29,6 @@
                                 <a class="nav-link" href="@Url.Action("Create", "Task")">Add Task</a>
                             </li>
                         }
-                        else if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Index", "Task")">All Tasks</a>
-                            </li>
-                        }
                     }
                 </ul>
                 <ul class="navbar-nav">
@@ -48,8 +42,19 @@
                                         <i class="fa fa-user"></i> @Session["Username"]
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a class="dropdown-item" href="@Url.Action("UpdateProfile", "Account")"><i class="fas fa-user-edit"></i> Update Profile</a></li>
-                                        <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")"><i class="fa fa-sign-out"></i> Logout</a></li>
+                                        @if (Session["Role"]?.ToString() != "Admin") // Only show for non-admin users
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("UpdateProfile", "Account")">
+                                                    <i class="fas fa-user-edit"></i> Update Profile
+                                                </a>
+                                            </li>
+                                        }
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.Action("Logout", "Account")">
+                                                <i class="fa fa-sign-out"></i> Logout
+                                            </a>
+                                        </li>
                                     </ul>
                                 </li>
                                 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
