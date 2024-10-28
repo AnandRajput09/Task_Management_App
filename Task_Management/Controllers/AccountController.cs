@@ -72,7 +72,6 @@ namespace Task_Management.Controllers
         }
 
 
-
         //public ActionResult Login(string username, string password, string role)
         //{
         //    var user = db.Users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == role);
