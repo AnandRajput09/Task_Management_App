@@ -63,6 +63,10 @@ Usage
 •	Login as either an Admin or a regular user to access the task management system.
 •	Admins can manage all tasks, while regular users can only see tasks they created.
 
+Live Application Link
+
+You can access the live version of this application here: https://anandwebsite.bsite.net/Account/Login
+
 GitHub Repository Link
 
 https://github.com/AnandRajput09/Task_Management_App
