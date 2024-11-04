@@ -23,9 +23,9 @@
                         @Html.LabelFor(model => model.Password, new { @class = "form-label fw-bold" })
                         @Html.PasswordFor(model => model.Password, new { @class = "col-12 form-control", placeholder = "Enter new password", required = "required" })
                     </div>
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-success">Update Profile</button>
-                        <a href="@Url.Action("Index", "Task")" class="btn btn-primary">Back to Home Page</a>
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success w-100">Update Profile</button>
+                        <a href="@Url.Action("Index", "Task")" class="btn btn-primary mt-3 w-100">Back to Home Page</a>
                     </div>
                 }
             </div>
